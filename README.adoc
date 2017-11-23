@@ -1,0 +1,78 @@
+= AsciiDoctor GitHub includes extension
+
+This AsciiDoctor extension lets you include files directly from remote GitHub repositories. It will only affect include directives for URIs beginning with `https://raw.githubusercontent.com`.
+
+== Installation
+
+With Ruby Gems:
+
+    gem install asciidoctor-github-include
+
+== Usage
+
+=== Command line
+
+    asciidoctor -r asciidoctor-github-include -a github-access-token=yourtoken [file.adoc]
+
+`yourtoken` is a https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line[personal access token for command line usage] that you've generated. It needs full `repo` access.
+
+Then, inside your AsciiDoc file, use an `include` statement like normal, pointing to a URI that begins with `https://raw.githubusercontent.com`.
+
+== Examples
+
+=== Retrieve specific branches using attributes
+
+A useful way to set up your AsciiDoc file when using asciidoctor-github-include is something like this:
+
+----
+= GitHub Use
+:repo-stem: https://raw.githubusercontent.com/my_username/my_private_repo
+:ref: master
+:my_private_repo: {snippet-source}/{ref}
+
+\include::{my_private_repo}/path/to/included.adoc[]
+----
+
+By default, this will use the master branch. If you want to generate docs from a different branch, though, you can pass in a different reference from the command line:
+
+    asciidoctor -r asciidoctor-github-include -a github-access-token=yourtoken -a ref=v1.2.3 [file.adoc]
+
+Valid values for `ref` here are anything that works for `git checkout`: a branch name, a tag, or a commit SHA.
+
+=== Use this extension with Jekyll
+
+One of the reasons this extension exists is to allow the easy generation of Jekyll-based documentation sites that need to fetch resources from various other git repos. However, you can't pass attributes into jekyll-asciidoc from the command line. To work around this, we use a secondary, secret config file.
+
+==== Prerequisites
+
+In your `Gemfile`:
+
+    gem 'jekyll-asciidoc'
+    gem 'asciidoctor-github-include'
+
+In your `_config.yml`:
+
+    plugins:
+      - jekyll-asciidoc
+      - asciidoctor-github-include
+
+In a new file called `_secret.yml`:
+
+    asciidoctor:
+      attributes:
+        github-access-token: yourtoken
+
+`yourtoken` is a https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line[personal access token for command line usage] that you've generated.
+
+In your `.gitignore`:
+
+    _secret.yml
+
+==== Generating the site
+
+Pass the secret config file to `jekyll build`:
+
+    jekyll build --config _config.yml,_secret.yml
+
+
+
