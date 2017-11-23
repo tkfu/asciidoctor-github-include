@@ -63,7 +63,7 @@ A useful way to set up your AsciiDoc file when using asciidoctor-github-include 
 = GitHub Use
 :repo-stem: https://raw.githubusercontent.com/my_username/my_private_repo
 :ref: master
-:my_private_repo: {snippet-source}/{ref}
+:my_private_repo: {repo-stem}/{ref}
 
 \include::{my_private_repo}/path/to/included.adoc[]
 ----
@@ -76,7 +76,7 @@ Later on, you may want to generate docs from a different branch. For that, you c
 
     asciidoctor -r asciidoctor-github-include -a github-access-token=yourtoken -a ref=v1.2.3 [file.adoc]
 
-Valid values for `ref` here are anything that works for `git checkout`: a branch name, a tag, or a commit SHA.
+Valid values for `ref` here are anything that works for `git checkout`: a branch name, a tag, or a commit SHA--even a shortened one.
 
 === Use this extension with Jekyll
 
