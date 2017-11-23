@@ -1,4 +1,18 @@
 = AsciiDoctor GitHub includes extension
+ifndef::env-github[:icons: font]
+ifdef::env-github[]
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+
+ifdef::github-access-token[]
+****
+Hey, you did it! This block only appears if you set up an access token and rendered the README locally.
+****
+endif::[]
 
 This AsciiDoctor extension lets you include files directly from remote GitHub repositories. It will only affect include directives for URIs beginning with `https://raw.githubusercontent.com`.
 
@@ -12,13 +26,34 @@ With Ruby Gems:
 
 === Command line
 
-    asciidoctor -r asciidoctor-github-include -a github-access-token=yourtoken [file.adoc]
+Load the extension, and pass a GitHub https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line[personal access token] as an attribute named `github-access-token`:
 
-`yourtoken` is a https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line[personal access token for command line usage] that you've generated. It needs full `repo` access.
+    asciidoctor -r asciidoctor-github-include -a github-access-token=yourtoken [file.adoc]
 
 Then, inside your AsciiDoc file, use an `include` statement like normal, pointing to a URI that begins with `https://raw.githubusercontent.com`.
 
+[IMPORTANT]
+====
+If you set up an access token (by setting the `github-access-token` attribute), it must be a *valid* access token--even for accessing public repos. This is because GitHub returns 404 on all requests that pass invalid tokens.
+
+If `github-access-token` is left undefined, however, fetching from public repositories will still work.
+====
+
 == Examples
+
+=== Basic
+
+Save this 1-line Asciidoc file as `readme.adoc`:
+
+----
+\include::https://raw.githubusercontent.com/tkfu/asciidoctor-github-include/master/README.adoc[]
+----
+
+Then run
+
+    asciidoctor -r asciidoctor-github-include -a github-access-token=yourtoken readme.adoc
+
+and open `readme.html` in your browser. You should be looking at this readme!
 
 === Retrieve specific branches using attributes
 
@@ -33,7 +68,11 @@ A useful way to set up your AsciiDoc file when using asciidoctor-github-include 
 \include::{my_private_repo}/path/to/included.adoc[]
 ----
 
-By default, this will use the master branch. If you want to generate docs from a different branch, though, you can pass in a different reference from the command line:
+Then, generate the doc:
+
+    asciidoctor -r asciidoctor-github-include -a github-access-token=yourtoken [file.adoc]
+
+Later on, you may want to generate docs from a different branch. For that, you can override the `ref` attribute from the command line:
 
     asciidoctor -r asciidoctor-github-include -a github-access-token=yourtoken -a ref=v1.2.3 [file.adoc]
 
