@@ -39,6 +39,8 @@ If you set up an access token (by setting the `github-access-token` attribute), 
 If `github-access-token` is left undefined, however, fetching from public repositories will still work.
 ====
 
+// tag::examples[]
+
 == Examples
 
 === Basic
@@ -113,5 +115,6 @@ Pass the secret config file to `jekyll build`:
 
     jekyll build --config _config.yml,_secret.yml
 
+// end::examples[]
 
 
