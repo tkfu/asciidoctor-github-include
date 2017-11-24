@@ -122,7 +122,7 @@ Pass the secret config file to `jekyll build`:
 === Unsupported features
 
 * http://asciidoctor.org/docs/user-manual/#by-line-ranges[Include by line ranges]
-* http://asciidoctor.org/docs/user-manual/#tag-filtering[Tag filtering]
+* http://asciidoctor.org/docs/user-manual/#tag-filtering[Tag filtering], including negated tags (`tag=!mytag`)
 
 === Partially supported features
 
