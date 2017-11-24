@@ -117,4 +117,64 @@ Pass the secret config file to `jekyll build`:
 
 // end::examples[]
 
+== Bugs and omissions
 
+=== Unsupported features
+
+* http://asciidoctor.org/docs/user-manual/#by-line-ranges[Include by line ranges]
+* http://asciidoctor.org/docs/user-manual/#tag-filtering[Tag filtering]
+
+=== Partially supported features
+
+* http://asciidoctor.org/docs/user-manual/#by-tagged-regions[Include by tagged regions]
+** Only the _first_ region matching each tag you pass in is retrieved.
+** When using multiple tags via `include::[tags=foo;bar]`, tagged regions are added in the order specified, *not* the order they originally appear in the source file.
+
+Example of the behaviour difference compared to native AsciiDoctor includes:
+
+.Source file contents
+----
+// tag::foo[]
+
+Lorem ipsum part 1
+
+// end::foo[]
+
+Some text I don't care about
+
+// tag::bar[]
+
+Lorem ipsum part 2
+
+// end::bar[]
+
+// tag::foo[]
+
+Lorem ipsum part 3
+
+// end::foo[]
+----
+
+.Text yielded by `include::https://raw.githubusercontent.com/path/to/file[tags=bar;foo]`
+----
+
+Lorem ipsum part 2
+
+
+Lorem ipsum part 1
+
+----
+
+.Text yielded by native AsciiDoctor `include::/path/to/file[tags=bar;foo]`
+----
+
+Lorem ipsum part 1
+
+
+Lorem ipsum part 2
+
+
+
+Lorem ipsum part 3
+
+----
