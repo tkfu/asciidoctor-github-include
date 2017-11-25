@@ -9,8 +9,12 @@ class GithubPrivateUriIncludeProcessor < Extensions::IncludeProcessor
   end
 
   def process doc, reader, target, attributes
-    tags = [attributes["tag"]] unless !attributes["tag"]
-    tags = attributes["tags"].split(";") unless !attributes["tags"]
+
+    tags  = [attributes["tag"]] if attributes.key? "tag" unless attributes["tag"] == ""
+    tags  = attributes["tags"].split(DataDelimiterRx) if attributes.key? "tags" unless attributes["tags"] == ""
+    lines = attributes["lines"] unless attributes["lines"] == ""
+
+    # Fetch the file to be included
     begin
       doc.attr('github-access-token').nil? ? 
         content = (open target).readlines :
@@ -18,8 +22,14 @@ class GithubPrivateUriIncludeProcessor < Extensions::IncludeProcessor
     rescue
       warn %(asciidoctor: WARNING: Failed to retrieve GitHub URI #{target}. Did you set :github-access-token:?)
       content = "WARNING: Failed to retrieve GitHub URI link:#{target}[]"
+      return reader.push_include content, target, target, 1, attributes
     end
-    content = process_tags(content, tags, target) unless !tags
+
+    # process the lines and tags attributes
+    content = process_line_selection(content, lines, target) if lines
+    content = process_tags(content, tags, target) if tags unless lines
+
+    # push the lines onto the reader and return it
     reader.push_include content, target, target, 1, attributes
     reader
   end
@@ -59,6 +69,25 @@ class GithubPrivateUriIncludeProcessor < Extensions::IncludeProcessor
       end
 
       snipped_content += text[tag_open+1..tag_close-1] unless (!tag_open || !tag_close)
+    end
+    snipped_content
+  end
+
+  def process_line_selection text, lines, target
+    snipped_content = []
+    selected_lines = []
+
+    lines.split(DataDelimiterRx).each do |linedef|
+      if linedef.include?('..')
+        from, to = linedef.split('..', 2).map {|it| it.to_i }
+        to = text.length if to == -1 # -1 as a closing length means end of file
+        selected_lines.concat ::Range.new(from, to).to_a
+      else
+        selected_lines << linedef.to_i
+      end
+    end
+    selected_lines.sort.uniq.each do |i|
+      snipped_content << text[i-1]
     end
     snipped_content
   end
