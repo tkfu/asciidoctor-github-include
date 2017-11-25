@@ -13,6 +13,9 @@ class GithubPrivateUriIncludeProcessor < Extensions::IncludeProcessor
     tags  = [attributes["tag"]] if attributes.key? "tag" unless attributes["tag"] == ""
     tags  = attributes["tags"].split(DataDelimiterRx) if attributes.key? "tags" unless attributes["tags"] == ""
     lines = attributes["lines"] unless attributes["lines"] == ""
+    if lines && tags
+      warn %(asciidoctor: WARNING: Tag selection #{tags} in #{target} was ignored because line selection was specified.)
+    end
 
     # Fetch the file to be included
     begin
