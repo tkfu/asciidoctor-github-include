@@ -1,0 +1,12 @@
+== Changelog
+
+=== 0.0.2 (25.11.2017)
+
+* Implemented line selection
+* Added test suite
+* Minor bug fixes for tags
+
+=== 0.0.1 (23.11.2017)
+
+* Initial version
+* Include by tagged selection

@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name          = "asciidoctor-github-include"
-  s.version       = "0.0.1"
+  s.version       = "0.0.2"
   s.authors       = ["Jon Oster"]
   s.email         = ["jon@advancedtelematic.com"]
   s.description   = %q{Asciidoctor extension for including files from private GitHub repos}
