@@ -50,6 +50,14 @@ class GithubPrivateUriIncludeProcessor < Extensions::IncludeProcessor
         tag_open = text.index{|line| line.chomp.end_with? %(tag::#{tag}[])}
         tag_close = text.index{|line| line.chomp.end_with? %(end::#{tag}[])}
       end
+      if (!tag_open && !tag_close)
+        warn %(asciidoctor: WARNING: Tag #{tag} not found in included GitHub URI #{target}.)
+      elsif (!tag_open && tag_close)
+        warn %(asciidoctor: WARNING: Tag #{tag} not found in included GitHub URI #{target}, but end::[] tag was found.)
+      elsif (tag_open && !tag_close)
+        warn %(asciidoctor: WARNING: Closing tag for tag #{tag} not found in included GitHub URI #{target}.)
+      end
+
       snipped_content += text[tag_open+1..tag_close-1] unless (!tag_open || !tag_close)
     end
     snipped_content
