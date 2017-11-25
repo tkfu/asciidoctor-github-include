@@ -121,13 +121,13 @@ Pass the secret config file to `jekyll build`:
 
 === Unsupported features
 
-* http://asciidoctor.org/docs/user-manual/#by-line-ranges[Include by line ranges]
 * http://asciidoctor.org/docs/user-manual/#tag-filtering[Tag filtering], including negated tags (`tag=!mytag`)
 
 === Partially supported features
 
 * http://asciidoctor.org/docs/user-manual/#by-tagged-regions[Include by tagged regions]
-** Only the _first_ region matching each tag you pass in is retrieved.
+** You can't use tagged regions and http://asciidoctor.org/docs/user-manual/#by-line-ranges[line ranges] together. If you specify both, the tags will be ignored.
+** Only the _first_ region matching each tag you pass in is retrieved. If you have multiple regions with the same tag, everything except the first will be ignored.
 ** When using multiple tags via `include::[tags=foo;bar]`, tagged regions are added in the order specified, *not* the order they originally appear in the source file.
 
 Example of the behaviour difference compared to native AsciiDoctor includes:
